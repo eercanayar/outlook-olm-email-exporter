@@ -2,7 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 
 folders = ["Inbox", "Sent Items"]
-blacklist = ["asana.com", "no-reply", "noreply", "registration"]
+blacklist = ["asana.com", "reply", "noreply", "registration", "chime", "support@", "mailchimp", ".calendar", "=", "-_", "mailbox", "+","account","fatura","hizmetleri","musteri","marketing@", "help@", "sales"]
 
 email_list = []
 for folder in folders:
@@ -21,13 +21,16 @@ for folder in folders:
             root = tree.getroot()
             for item in root.iter('emailAddress'):
                 if 'OPFContactEmailAddressAddress' in item.attrib:
-                    if any(to_check in item.attrib['OPFContactEmailAddressAddress'] for to_check in blacklist):
-                        print(">>"+item.attrib['OPFContactEmailAddressAddress']+" is blacklisted")
+                    if any(to_check in item.attrib['OPFContactEmailAddressAddress'].lower() for to_check in blacklist):
+                        #print(">>"+item.attrib['OPFContactEmailAddressAddress']+" is blacklisted")
+                        continue
+                    if any(item.attrib['OPFContactEmailAddressAddress'].lower() in s for s in email_list):
+                        #print(">>"+item.attrib['OPFContactEmailAddressAddress']+" exists")
                         continue
                     if 'OPFContactEmailAddressName' in item.attrib:
-                        to_append = item.attrib['OPFContactEmailAddressName']+" <"+item.attrib['OPFContactEmailAddressAddress']+">"
+                        to_append = item.attrib['OPFContactEmailAddressName']+" <"+item.attrib['OPFContactEmailAddressAddress'].lower()+">"
                     else:
-                        to_append = item.attrib['OPFContactEmailAddressAddress']
+                        to_append = item.attrib['OPFContactEmailAddressAddress']+" <"+item.attrib['OPFContactEmailAddressAddress'].lower()+">"
                     email_list.append(to_append)
 
 # make every email unique
