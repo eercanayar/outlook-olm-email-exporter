@@ -37,5 +37,5 @@ for folder in folders:
 email_list = list(set(email_list))
 
 f = open("export.txt", "w")
-f.write("\n".join(email_list))
+f.write("\n".join(email_list).encode('utf8'))
 print("operation completed")
